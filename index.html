@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Poäng</title>
+  <meta name="description" content="Poängtavla för Hannes och mig">
+  <meta name="theme-color" content="#f6f3ee" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15171a" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Poäng">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/favicon.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="board" id="board">
+    <section class="player" data-id="jag" aria-label="Jag">
+      <div class="track">
+        <div class="area">
+          <div class="bar"><span class="score" aria-live="polite">0</span></div>
+        </div>
+      </div>
+      <img class="face" src="img/jag.jpg" alt="Jag" width="360" height="360">
+      <div class="buttons">
+        <button type="button" class="btn minus" data-delta="-1" aria-label="Minus en poäng">−</button>
+        <button type="button" class="btn plus" data-delta="1" aria-label="Plus en poäng">+</button>
+      </div>
+    </section>
+
+    <section class="player" data-id="hannes" aria-label="Hannes">
+      <div class="track">
+        <div class="area">
+          <div class="bar"><span class="score" aria-live="polite">0</span></div>
+        </div>
+      </div>
+      <img class="face" src="img/hannes.jpg" alt="Hannes" width="360" height="360">
+      <div class="buttons">
+        <button type="button" class="btn minus" data-delta="-1" aria-label="Minus en poäng">−</button>
+        <button type="button" class="btn plus" data-delta="1" aria-label="Plus en poäng">+</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <button type="button" class="reset" id="reset">Nollställ</button>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
