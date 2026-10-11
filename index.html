@@ -17,6 +17,14 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="splash" id="splash" data-state="starting">
+    <h1 class="splash-title">
+      <span class="word">MAMMELIMAMMAS</span>
+      <span class="word">POÄNG-APP!</span>
+    </h1>
+    <button type="button" class="splash-start">Tryck för att starta</button>
+  </div>
+
   <main class="board" id="board">
     <section class="player" data-id="jag" aria-label="Jag">
       <div class="track">
@@ -49,6 +57,7 @@
     <button type="button" class="reset" id="reset">Nollställ</button>
   </footer>
 
+  <script src="splash.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
