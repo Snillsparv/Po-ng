@@ -8,6 +8,8 @@
   var RESHOW_AFTER_MS = 60 * 1000;
   // Fallback in case the sound never reports that it ended.
   var MAX_PLAY_MS = 9000;
+  // A tap this soon after the start tap is the second half of a double tap, not a skip.
+  var SKIP_GRACE_MS = 700;
 
   var splash = document.getElementById('splash');
   var title = splash.querySelector('.splash-title');
@@ -19,6 +21,7 @@
   var state = 'hidden';
   var timer = null;
   var hiddenAt = 0;
+  var tappedAt = 0;
 
   // Split the title into letters so they can bounce in one at a time.
   title.setAttribute('aria-label', title.textContent.replace(/\s+/g, ' ').trim());
@@ -64,6 +67,7 @@
     splash.classList.remove('animate');
     void splash.offsetWidth;
     splash.classList.add('animate');
+    tappedAt = 0;
     setState('starting');
 
     soundLoaded.then(function () {
@@ -102,11 +106,16 @@
   // and skips the rest of the splash when it is already playing.
   splash.addEventListener('click', function () {
     if (state === 'playing') {
-      hide();
+      if (Date.now() - tappedAt >= SKIP_GRACE_MS) hide();
     } else if (state === 'starting' || state === 'blocked') {
       if (!audio.src) audio.src = SOUND_URL;
+      tappedAt = Date.now();
       setState('playing');
+      // Hide eventually even if the sound never starts (e.g. a stalled download).
+      clearTimeout(timer);
+      timer = setTimeout(hide, MAX_PLAY_MS);
       play().then(onPlaying, function () {
+        if (state !== 'playing') return;
         clearTimeout(timer);
         timer = setTimeout(hide, 1200);
       });

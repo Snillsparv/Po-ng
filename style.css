@@ -224,9 +224,11 @@ body {
   transition: opacity .35s ease;
 }
 
+/* Keep catching taps while fading out, so a quick second tap can't reach the buttons underneath. */
 .splash.leaving {
   opacity: 0;
-  pointer-events: none;
+  visibility: hidden;
+  transition: opacity .35s ease, visibility 0s linear .35s;
 }
 
 .splash[hidden] { display: none; }

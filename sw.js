@@ -1,6 +1,6 @@
 // Offline support: serve the app from the cache and refresh it in the background,
 // so updates show up the next time the app is opened.
-var CACHE = 'poang-v2';
+var CACHE = 'poang-v3';
 var ASSETS = [
   './',
   'index.html',
@@ -21,7 +21,9 @@ var ASSETS = [
 self.addEventListener('install', function (event) {
   // Cache each file on its own, so one missing file doesn't stop the rest from working offline.
   event.waitUntil(caches.open(CACHE).then(function (cache) {
-    return Promise.all(ASSETS.map(function (url) { return cache.add(url).catch(function () {}); }));
+    return Promise.all(ASSETS.map(function (url) {
+      return cache.add(new Request(url, { cache: 'reload' })).catch(function () {});
+    }));
   }));
   self.skipWaiting();
 });
@@ -30,7 +32,9 @@ self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys()
       .then(function (keys) {
-        return Promise.all(keys.filter(function (k) { return k !== CACHE; }).map(function (k) { return caches.delete(k); }));
+        // Other apps on the same github.io origin share this cache storage; only remove our own.
+        var old = keys.filter(function (k) { return k !== CACHE && k.indexOf('poang-') === 0; });
+        return Promise.all(old.map(function (k) { return caches.delete(k); }));
       })
       .then(function () { return self.clients.claim(); })
   );
@@ -42,7 +46,8 @@ self.addEventListener('fetch', function (event) {
   // Safari streams media with range requests, which a plain cached response can't answer.
   if (request.headers.has('range')) return;
 
-  var network = fetch(request).then(function (response) {
+  // Check with the server instead of trusting the browser's HTTP cache, so updates arrive promptly.
+  var network = fetch(request, { cache: 'no-cache' }).then(function (response) {
     if (response.ok) {
       var copy = response.clone();
       event.waitUntil(caches.open(CACHE).then(function (cache) { return cache.put(request, copy); }));
